@@ -1,0 +1,52 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+div {
+  background-color: #4d4d4d;
+  width: 70%;
+  margin: 0 auto;
+  height: 100%;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 30px;
+  font-weight: 100;
+  text-align: center;
+  padding-top: 30px;
+  color: white;
+}
+
+form {
+  display: inline;
+}
+
+ul {
+  list-style-type: none;
+}
+
+li{
+  background-color: #0d8bd9;
+  margin-top: 1em;
+  border-radius: 40px;
+  color: white;
+  padding: 20px;
+  width: 60%;
+}
+
+button {
+  padding: 4px 7px;
+  border-radius: 20px;
+}
+
+ul button {
+  float: right;
+}
+
+.todo-button {
+}
+
+.button-alignment {
+
+}
