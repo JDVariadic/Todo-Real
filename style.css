@@ -2,24 +2,34 @@
   margin: 0;
   padding: 0;
 }
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
 div {
   background-color: #4d4d4d;
-  width: 70%;
+  width: 400px;
   margin: 0 auto;
   height: 100%;
   padding: 20px;
 }
 
 h1 {
-  margin-bottom: 30px;
+  margin-bottom: 60px;
   font-weight: 100;
   text-align: center;
-  padding-top: 30px;
+  padding-top: 60px;
   color: white;
 }
 
 form {
   display: inline;
+}
+
+input {
+  font-size: 12pt;
+  height: 20px;
 }
 
 ul {
@@ -32,12 +42,13 @@ li{
   border-radius: 40px;
   color: white;
   padding: 20px;
-  width: 60%;
+  width: 80%;
 }
 
 button {
   padding: 4px 7px;
   border-radius: 20px;
+  border-style: solid;
 }
 
 ul button {
@@ -49,4 +60,8 @@ ul button {
 
 .button-alignment {
 
+}
+
+#delete-button {
+  margin-left: 15px;
 }
