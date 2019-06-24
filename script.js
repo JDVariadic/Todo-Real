@@ -45,16 +45,47 @@ function addItemToFrontEnd(item){
   //Change id attribute of <li> in general so edit and delete can use the same point of reference.
   //Reference certain task ID using .parent() function of the deleteButton (Similar to the function deleteItem)
 
-  deleteButton.setAttribute("id", todoItems.indexOf(item))
+  //deleteButton.setAttribute("id", todoItems.indexOf(item))
 
   deleteButton.addEventListener("click", function() {
-    todoItems.splice(deleteButton.id, 1)
+    todoItems.splice(this.parentNode.id, 1)
     this.parentNode.remove()
     localStorage.setItem("tasks", JSON.stringify(todoItems))
   });
 
+  var editButton = document.createElement("button")
+  editButton.innerHTML = "Edit"
+
+  var editInput = document.createElement("input");
+  editInput.type = "text"
+  editInput.value = item
+
+  var editConfirm = document.createElement("button")
+  editConfirm.innerHTML = "Confirm"
+
+
+
+  //var editInput = html`<input type="text" value="${item}"><button>Confirm</button>`
+  editButton.addEventListener("click", function() {
+    document.getElementById(todoItems.indexOf(item)).innerHTML = ""
+    document.getElementById(todoItems.indexOf(item)).appendChild(editInput)
+    document.getElementById(todoItems.indexOf(item)).appendChild(editConfirm)
+  });
+
+  editConfirm.addEventListener("click", function() {
+    todoItems[todoItems.indexOf(item)] = editInput.value
+    localStorage.setItem("tasks", JSON.stringify(todoItems))
+    this.parentNode.innerHTML = editInput.value
+    this.parentNode.innerHTML.appendChild(editButton)
+    this.parentNode.innerHTML.appendChild(deleteButton)
+  });
+
+  //Prev Position of listElement
+  var listElement = html`<li id="${todoItems.indexOf(item)}">${item}${editButton}${deleteButton}</li>`
+
+  //listElement.id = todoItems.indexOf(item).toString()
   //Make template cleaner
-  webItemList.push(html`<li>${item}${deleteButton}</li>`)
+  webItemList.push(listElement)
   render(webItemList, listAppearingOnSite)
 }
 
