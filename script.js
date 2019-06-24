@@ -27,6 +27,7 @@ document.getElementById("add-button").addEventListener("click", function() {
   todoItems.push(item)
   localStorage.setItem("tasks", JSON.stringify(todoItems))
   addItemToFrontEnd(item)
+  document.getElementById("add-field").value = ""
 });
 
 
@@ -73,11 +74,13 @@ function addItemToFrontEnd(item){
   });
 
   editConfirm.addEventListener("click", function() {
+    var index = todoItems.indexOf(item)
     todoItems[todoItems.indexOf(item)] = editInput.value
     localStorage.setItem("tasks", JSON.stringify(todoItems))
     this.parentNode.innerHTML = editInput.value
-    this.parentNode.innerHTML.appendChild(editButton)
-    this.parentNode.innerHTML.appendChild(deleteButton)
+    item = editInput.value
+    document.getElementById(index).appendChild(editButton)
+    document.getElementById(index).appendChild(deleteButton)
   });
 
   //Prev Position of listElement
