@@ -1,6 +1,6 @@
 
 //lit-html library
-import {html,render} from './node_modules/lit-html/lit-html.js';
+import {html,render} from './node_modules/lit-html/lit-html.js'
 
 //Location that the list will be rendered to in the webpage
 const listAppearingOnSite = document.getElementById("item-list")
@@ -20,7 +20,7 @@ if(localStorage.getItem("tasks")){
 //Print existing tasks from previous sessions
 todoItems.forEach(function(task) {
   addItemToFrontEnd(task)
-});
+})
 
 //EventListener to reflect changes when adding new tasks to the list
 document.getElementById("add-button").addEventListener("click", function() {
@@ -31,7 +31,7 @@ document.getElementById("add-button").addEventListener("click", function() {
     addItemToFrontEnd(item)
     document.getElementById("add-field").value = ""
   }
-});
+})
 
 
 document.getElementById("delete-button").addEventListener("click", function() {
@@ -39,7 +39,7 @@ document.getElementById("delete-button").addEventListener("click", function() {
   localStorage.setItem("tasks", JSON.stringify(todoItems))
   webItemList = []
   render(webItemList, listAppearingOnSite)
-});
+})
 
 //Adding the tasks to the list and also adding the corresponding edit and delete buttons and their functions
 function addItemToFrontEnd(item){
@@ -51,7 +51,7 @@ function addItemToFrontEnd(item){
     todoItems.splice(this.parentNode.id, 1)
     this.parentNode.remove()
     localStorage.setItem("tasks", JSON.stringify(todoItems))
-  });
+  })
 
   var editButton = document.createElement("button")
   editButton.innerHTML = "Edit"
@@ -70,7 +70,7 @@ function addItemToFrontEnd(item){
     document.getElementById(todoItems.indexOf(item)).innerHTML = ""
     document.getElementById(todoItems.indexOf(item)).appendChild(editInput)
     document.getElementById(todoItems.indexOf(item)).appendChild(editConfirm)
-  });
+  })
 
   //Assigns the new edited task and updates the localStorage
   editConfirm.addEventListener("click", function() {
@@ -85,7 +85,7 @@ function addItemToFrontEnd(item){
       document.getElementById(index).appendChild(editButton)
     }
 
-  });
+  })
 
   var listElement = html`<li id="${todoItems.indexOf(item)}">${item}${deleteButton}${editButton}</li>`
   webItemList.push(listElement)
