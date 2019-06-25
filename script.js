@@ -75,13 +75,15 @@ function addItemToFrontEnd(item){
   //Assigns the new edited task and updates the localStorage
   editConfirm.addEventListener("click", function() {
     //Acts as a reference to the index of the item
-    var index = todoItems.indexOf(item)
-    todoItems[todoItems.indexOf(item)] = editInput.value
-    localStorage.setItem("tasks", JSON.stringify(todoItems))
-    this.parentNode.innerHTML = editInput.value
-    item = editInput.value
-    document.getElementById(index).appendChild(deleteButton)
-    document.getElementById(index).appendChild(editButton)
+    if(editInput.value != "") {
+      var index = todoItems.indexOf(item)
+      todoItems[todoItems.indexOf(item)] = editInput.value
+      localStorage.setItem("tasks", JSON.stringify(todoItems))
+      this.parentNode.innerHTML = editInput.value
+      item = editInput.value
+      document.getElementById(index).appendChild(deleteButton)
+      document.getElementById(index).appendChild(editButton)
+    }
 
   });
 
