@@ -1,13 +1,14 @@
 
-
+//lit-html library
 import {html,render} from './node_modules/lit-html/lit-html.js';
 
-
-
-//const webItemList = document.getElementById("item-list")
+//Location that the list will be rendered to in the webpage
 const listAppearingOnSite = document.getElementById("item-list")
+
+//Array containing tasks in HTML format
 var webItemList = []
-//const myTemplate = (todo) => html` <li>${todo}</li>`
+
+//Acts as a middleman between the webItemList and the localStorage
 var todoItems
 
 if(localStorage.getItem("tasks")){
@@ -23,11 +24,13 @@ todoItems.forEach(function(task) {
 
 //EventListener to reflect changes when adding new tasks to the list
 document.getElementById("add-button").addEventListener("click", function() {
-  var item = document.getElementById("add-field").value;
-  todoItems.push(item)
-  localStorage.setItem("tasks", JSON.stringify(todoItems))
-  addItemToFrontEnd(item)
-  document.getElementById("add-field").value = ""
+  if(document.getElementById("add-field").value != ""){
+    var item = document.getElementById("add-field").value;
+    todoItems.push(item)
+    localStorage.setItem("tasks", JSON.stringify(todoItems))
+    addItemToFrontEnd(item)
+    document.getElementById("add-field").value = ""
+  }
 });
 
 
@@ -38,15 +41,11 @@ document.getElementById("delete-button").addEventListener("click", function() {
   render(webItemList, listAppearingOnSite)
 });
 
+//Adding the tasks to the list and also adding the corresponding edit and delete buttons and their functions
 function addItemToFrontEnd(item){
   //Insert HTML template here soon
   var deleteButton = document.createElement("button")
   deleteButton.innerHTML = "Delete"
-
-  //Change id attribute of <li> in general so edit and delete can use the same point of reference.
-  //Reference certain task ID using .parent() function of the deleteButton (Similar to the function deleteItem)
-
-  //deleteButton.setAttribute("id", todoItems.indexOf(item))
 
   deleteButton.addEventListener("click", function() {
     todoItems.splice(this.parentNode.id, 1)
@@ -66,32 +65,27 @@ function addItemToFrontEnd(item){
 
 
 
-  //var editInput = html`<input type="text" value="${item}"><button>Confirm</button>`
+  //Turns the innerHTML of the list item into an input box for editing tasks
   editButton.addEventListener("click", function() {
     document.getElementById(todoItems.indexOf(item)).innerHTML = ""
     document.getElementById(todoItems.indexOf(item)).appendChild(editInput)
     document.getElementById(todoItems.indexOf(item)).appendChild(editConfirm)
   });
 
+  //Assigns the new edited task and updates the localStorage
   editConfirm.addEventListener("click", function() {
+    //Acts as a reference to the index of the item
     var index = todoItems.indexOf(item)
     todoItems[todoItems.indexOf(item)] = editInput.value
     localStorage.setItem("tasks", JSON.stringify(todoItems))
     this.parentNode.innerHTML = editInput.value
     item = editInput.value
-    document.getElementById(index).appendChild(editButton)
     document.getElementById(index).appendChild(deleteButton)
+    document.getElementById(index).appendChild(editButton)
+
   });
 
-  //Prev Position of listElement
-  var listElement = html`<li id="${todoItems.indexOf(item)}">${item}${editButton}${deleteButton}</li>`
-
-  //listElement.id = todoItems.indexOf(item).toString()
-  //Make template cleaner
+  var listElement = html`<li id="${todoItems.indexOf(item)}">${item}${deleteButton}${editButton}</li>`
   webItemList.push(listElement)
   render(webItemList, listAppearingOnSite)
-}
-
-function editItem() {
-
 }

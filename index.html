@@ -1,25 +1,27 @@
 <html>
 <head>
-	<title>Todo</title>
+	<title>Todo List</title>
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
-<div>
-<h1>Todo List</h1>
-<button id="add-button">Create</button>
+	<div class="container">
+		<div class="content">
+			<div class="todo-interactions">
+			<h1>Todo List</h1>
+				<button id="add-button">Create</button>
 
-<form>
-	<input type="text" id="add-field" maxlength="25">
-</form>
+				<form>
+					<input type="text" id="add-field" maxlength="22">
+				</form>
 
-<button id="delete-button">Delete All</button>
-
-<ul id="item-list">
-</ul>
-
+				<button id="delete-button">Delete All</button>
+		  </div>
+			<ul id="item-list">
+			</ul>
+	 </div>
 </div>
 
-</body>
+	</body>
 <script src="script.js" type="module"></script>
 </html>
