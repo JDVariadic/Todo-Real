@@ -1,141 +1,85 @@
 
 //lit-html library
-import {html,render} from './node_modules/lit-html/lit-html.js'
+import {render} from './node_modules/lit-html/lit-html.js'
+//import { LitElement, html } from './node_modules/lit-element/lit-element.js';
+import { html, LitElement } from 'https://unpkg.com/@polymer/lit-element@latest/lit-element.js?module';
 
-//import WebComponent
-import "./list-element.js"
+class ListElements extends LitElement{
 
-class ListElement extends HTMLElement {
+  static get properties() { return {
+    isInEditMode: {type: Boolean},
+  };}
+
   constructor() {
     super();
+    this.isInEditMode = false;
+    this.idEditTrigger = 0;
+  }
+  
+  render(){
+    return html`
+    <link rel="stylesheet" href="./style.css">
+    <div class="todo-interactions">
+
+    <h1>Todo List</h1>
+      <button id="add-button" @click="${this.addEvt}">Create</button>
+
+      <form>
+        <input type="text" id="add-field" maxlength="22">
+      </form>
+    </div>
+    <ul>
+    ${todoItems.map(i => html`<li id=${todoItems.indexOf(i)}><span>${i}</span><button @click="${this.editItem}">Edit</button><button @click="${this.deleteItem}">Delete</button></li>`)}
+    </ul>
+    `;
   }
 
-  connectedCallback(){
-    var currentItem = retrieveItemWithIndex(todoItems.length - 1)
-    //Associate element with id here
-    this.innerHTML = currentItem
-    //this.setAttribute("id", todoItems.indexOf(todoItems.length - 1))
+  checkEvtType() {
+    console.log("Choosing...")
+    if(this.isInEditMode == false){
+      addEvt()
+    } else if(this.isInEditMode == true) {
+      editConfirmEvt()
+    }
   }
 
-  disconnectedCallback() {
-    console.log("Element removed from the DOM")
+  addEvt() {
+    if(this.isInEditMode == false){
+      var item = this.shadowRoot.getElementById("add-field").value;
+      todoItems.push(item)
+      localStorage.setItem("tasks", JSON.stringify(todoItems))
+      this.shadowRoot.getElementById("add-field").value = ""
+      this.requestUpdate()
+    } else {
+      this.shadowRoot.getElementById(this.idEditTrigger).firstChild.innerHTML = this.shadowRoot.getElementById("add-field").value
+      todoItems[this.idEditTrigger] = this.shadowRoot.getElementById("add-field").value
+      localStorage.setItem("tasks", JSON.stringify(todoItems))
+      this.shadowRoot.getElementById("add-button").innerHTML = "Create"
+      this.isInEditMode = false
+    }
+  }
+
+  editItem(e) {
+    this.isInEditMode = true
+    this.idEditTrigger = e.target.parentNode.id
+    var actualValue = e.target.parentNode.firstChild.innerHTML
+    actualValue = actualValue.replace(/<!--.*?-->/sg, "")
+    this.shadowRoot.getElementById("add-field").value = actualValue
+    this.shadowRoot.getElementById("add-button").innerHTML = "Confirm"
+  }
+
+  deleteItem(e, listener) {
+    todoItems.splice(e.target.parentNode.id, 1)
+    localStorage.setItem("tasks", JSON.stringify(todoItems))
+    this.requestUpdate()
   }
 }
+customElements.define('list-elements', ListElements);
 
-window.customElements.define("list-element", ListElement)
-
-//Location that the list will be rendered to in the webpage
-const listAppearingOnSite = document.getElementById("item-list")
-
-//Array containing tasks in HTML format
-var webItemList = []
-
-//Acts as a middleman between the webItemList and the localStorage
 var todoItems
 
 if(localStorage.getItem("tasks")){
   todoItems = JSON.parse(localStorage.getItem("tasks"))
 } else {
   todoItems = []
-}
-
-//Print existing tasks from previous sessions
-todoItems.forEach(function(task) {
-  addItemToFrontEnd(task)
-})
-
-//EventListener to reflect changes when adding new tasks to the list
-document.getElementById("add-button").addEventListener("click", addEvt)
-
-//Deletes all items in the list
-document.getElementById("delete-button").addEventListener("click", deleteAllEvt)
-
-//?? Move this to the callback function?
-function addEvt() {
-  if(document.getElementById("add-field").value != ""){
-    var item = document.getElementById("add-field").value;
-    todoItems.push(item)
-    addItemToFrontEnd(item)
-    localStorage.setItem("tasks", JSON.stringify(todoItems))
-    document.getElementById("add-field").value = ""
-  }
-}
-
-//Adding the tasks to the list and also adding the corresponding edit and delete buttons and their functions
-//NOTE: Perhaps modify template here?
-function addItemToFrontEnd(item){
-
-  //Creates a delete button for an individual item
-  var deleteButton = document.createElement("button")
-  deleteButton.innerHTML = "Delete"
-
-  //Associates an event to this button
-  deleteButton.addEventListener("click", deleteItemEvt)
-
-  //Same with the delete button, adds an individual edit button for each item
-  var editButton = document.createElement("button")
-
-  //editButton setup
-  editButton.innerHTML = "Edit"
-
-  var editInput = document.createElement("input");
-  editInput.type = "text"
-  editInput.value = item
-
-  var editConfirm = document.createElement("button")
-  editConfirm.innerHTML = "Confirm"
-
-  //Turns the innerHTML of the list item into an input box for editing tasks
-  editButton.addEventListener("click", editOneEvt)
-
-  //Assigns the new edited task and updates the localStorage
-  editConfirm.addEventListener("click", editTwoEvt)
-
-
-  //Witout use of WebComponents
-  var listElement = html`<li id="${todoItems.indexOf(item)}">${item}${deleteButton}${editButton}</li>`
-
-  //Using WebComponents
-  var testElement = html`<list-element></list-element>`
-
-  //Push Template here, can call connectedCallback function to add the functionality
-  webItemList.push(testElement)
-  render(webItemList, listAppearingOnSite)
-}
-
-function deleteAllEvt() {
-  todoItems = []
-  localStorage.setItem("tasks", JSON.stringify(todoItems))
-  webItemList = []
-  render(webItemList, listAppearingOnSite)
-}
-
-function deleteItemEvt() {
-  todoItems.splice(this.parentNode.id, 1)
-  this.parentNode.remove()
-  localStorage.setItem("tasks", JSON.stringify(todoItems))
-}
-
-function editOneEvt() {
-  document.getElementById(todoItems.indexOf(item)).innerHTML = ""
-  document.getElementById(todoItems.indexOf(item)).appendChild(editInput)
-  document.getElementById(todoItems.indexOf(item)).appendChild(editConfirm)
-}
-
-function editTwoEvt() {
-  if(editInput.value != "") {
-    //Acts as a reference to the index of the item
-    var index = todoItems.indexOf(item)
-    todoItems[todoItems.indexOf(item)] = editInput.value
-    localStorage.setItem("tasks", JSON.stringify(todoItems))
-    this.parentNode.innerHTML = editInput.value
-    item = editInput.value
-    document.getElementById(index).appendChild(deleteButton)
-    document.getElementById(index).appendChild(editButton)
-  }
-}
-
-//Helper Function
-function retrieveItemWithIndex(index) {
-  return todoItems[index];
 }
